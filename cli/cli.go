@@ -9,11 +9,11 @@ import (
 	"github.com/hashicorp/vault/api"
 )
 
-type CliHandler struct{}
+type CLIHandler struct{}
 
 const mountPath = "tencentcloud"
 
-func (c *CliHandler) Auth(client *api.Client, m map[string]string) (*api.Secret, error) {
+func (c *CLIHandler) Auth(client *api.Client, m map[string]string) (*api.Secret, error) {
 	mount := m["mount"]
 	if mount == "" {
 		mount = mountPath
@@ -52,7 +52,7 @@ func (c *CliHandler) Auth(client *api.Client, m map[string]string) (*api.Secret,
 	return secret, nil
 }
 
-func (c *CliHandler) Help() string {
+func (c *CLIHandler) Help() string {
 	help := `
 Usage: vault login -method=tencentcloud [CONFIG K=V...]
 
