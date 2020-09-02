@@ -1,0 +1,91 @@
+---
+layout: docs
+page_title: TencentCloud - Auth Methods
+sidebar_title: TencentCloud
+description: The TencentCloud auth method allows automated authentication of TencentCloud entities.
+---
+
+# TencentCloud Auth Method
+
+The `tencentcloud` auth method provides an automated mechanism to retrieve
+a Vault token for TencentCloud entities. Unlike most Vault auth methods, this
+method does not require manual first-deploying, or provisioning
+security-sensitive credentials (tokens, username/password, client certificates,
+etc), by operators. It treats TencentCloud as a Trusted Third Party and uses a
+special TencentCloud request signed with private credentials.
+
+## Authentication Workflow
+
+The TencentCloud STS API includes a method, `sts:GetCallerIdentity`,
+which allows you to validate the identity of a client. The client signs
+a `GetCallerIdentity` query using the [TencentCloud signature
+algorithm](https://intl.cloud.tencent.com/document/product/213/33224). It then
+submits 3 pieces of information to the Vault server to recreate a valid signed
+request: the role name, the request URL, and the request headers. The Vault server then
+reconstructs the query and forwards it on to the TencentCloud STS service and validates
+the result back.
+
+Each signed TencentCloud request includes the current timestamp and a nonce to mitigate
+the risk of replay attacks.
+
+It's also important to note that TencentCloud does NOT include any sort
+of authorization around calls to `GetCallerIdentity`. For example, if you have
+a CAM policy on your credential that requires all access to be MFA authenticated,
+non-MFA authenticated credentials will still be able to authenticate to Vault
+using this method. It does not appear possible to enforce a CAM principal to be
+MFA authenticated while authenticating to Vault.
+
+## Authorization Workflow
+
+The basic mechanism of operation is per-role.
+
+Roles are associated with a role ARN that has been pre-created in TencentCloud.
+TencentCloud's console displays each role's ARN.
+
+When a client sends its `GetCallerIdentity` request to Vault, Vault matches the
+arn of a pre-created role in Vault. It then checks what policies have been
+associated with the role, and grants a token accordingly.
+
+## Authentication
+
+### Via the CLI
+
+#### Enable TencentCloud authentication in Vault.
+
+```sh
+$ vault auth enable tencentcloud
+```
+
+#### Configure the policies on the role.
+
+```sh
+$ vault write auth/tencentcloud/role/dev-role arn='qcs::cam::uin/12345678:roleName/testRoleName'
+```
+
+#### Perform the login operation
+
+```sh
+$ vault write auth/tencentcloud/login \
+        role=dev-role \
+        request_url=c3RzLnRlb23454jbG91ZGFwaS5jb20= \
+        signed_header=eyJBdXRob3JpemF0aW9uIjpbIlRDMy1ITfa432agzAZW50aWFsPXRlc3QvMjAyMC0wOS0wMi9jdm0vdGMzX3JlcXVlc3QsIFNpZ25lZEhlYWRlcnM9Y29udGVudC10eXBlO2hvc3QsIFNpZ25hdHVyZT04YWU3MzNkYTE0Yzk3NDAwMmZhYWJhMWViOTAwY2I0MTVkYWRhYTdjMWExZmViYTkwYzYwNWVjOGMyMDQ0YjNjIl0sIkNvbnRlbnQtVHlwZSI6WyJhcHBsaWNhdGlvbi9qc29uIl0sIlgtVGMtQWN0aW9uIjpbIkRlc2NyaWJlSW5zdGFuY2VzIl0sIlgtVGMtTGFuZ3VhZ2UiOlsiemgtQ04iXSwiWC1UYy1SZWdpb24iOlsiYXAtZ3Vhbmd6aG91Il0sIlgtVGMtUmVxdWVzdGNsaWVudCI6WyJBUElFeLVRjLCI6WyIxNTk5MDM1NjY0Il0sIlgtVGMtVmVyc2lvbiI6WyIyMDE3LTAzLTEyIl19
+```
+
+- The `request_url` is base64 encoded, and the raw url is like `sts.ap-guangzhou.tencentcloudapi.com`.
+- The `signed_header` is base64 encoded, and it is an HTTP header like
+```json
+{"Authorization":["TC3-HMAC-SHA256 Credential=test/2020-09-02/sts/tc3_request, SignedHeaders=content-type;host, Signature=alkjf324qljtrqlktjq1jgasaj"],"Content-Type":["application/json"],"X-Tc-Action":["GetCallerIdentity"],"X-Tc-Language":["zh-CN"],"X-Tc-Region":["ap-guangzhou"],"X-Tc-Requestclient":["test"],"X-Tc-Timestamp":["1599035664"],"X-Tc-Version":["2017-03-12"]}
+```
+
+For the CAM auth method, generating the signed request is a non-standard operation.
+The Vault CLI supports generating this for you:
+
+```sh
+$ vault login -method=tencentcloud access_key=... secret_key=... security_token=... region=...
+```
+
+## API
+
+The TencentCloud auth method has a full HTTP API. Please see the
+[TencentCloud Auth API](/api/auth/tencentcloud) for more
+details.
