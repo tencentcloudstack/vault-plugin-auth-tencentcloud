@@ -1,0 +1,214 @@
+---
+layout: api
+page_title: TencentCloud - Auth Methods - HTTP API
+sidebar_title: TencentCloud
+description: This is the API documentation for the Vault TencentCloud auth method.
+---
+
+# TencentCloud Auth Method (API)
+
+This is the API documentation for the Vault TencentCloud auth method. For
+general information about the usage and operation of the TencentCloud method, please
+see the [Vault TencentCloud auth method documentation](/docs/auth/tencentcloud).
+
+This documentation assumes the TencentCloud auth method is mounted at the `/auth/tencentcloud`
+path in Vault. Since it is possible to enable auth methods at any location,
+please update your API calls accordingly.
+
+## Create Role
+
+Create a role. Only entities using the role registered using this endpoint
+will be able to perform the login operation.
+
+| Method | Path                        |
+| :----- | :-------------------------- |
+| `POST` | `/auth/tencentcloud/roles/:role` |
+
+### Parameters
+
+- `role` `(string: <required>)` - Name of the role. Must correspond with the name of the role reflected in the arn.
+- `arn` `(string: <required>)` - The role's arn.
+
+@include 'partials/tokenfields.mdx'
+
+### Sample Payload
+
+```json
+{
+  "arn": "qcs::sts:1000262333:assumed-role/46116860184274112",
+  "policies": ["dev", "online"]
+}
+```
+
+### Sample Request
+
+```sh
+$ curl \
+    --header "X-Vault-Token: ..." \
+    --request POST \
+    --data @payload.json \
+    http://127.0.0.1:8200/v1/auth/tencentcloud/roles/dev-role
+```
+
+## Read Role
+
+Returns the previously created role configuration.
+
+| Method | Path                        |
+| :----- | :-------------------------- |
+| `GET`  | `/auth/tencentcloud/roles/:role` |
+
+### Parameters
+
+- `role` `(string: <required>)` - Name of the role.
+
+### Sample Request
+
+```sh
+$ curl \
+    --header "X-Vault-Token: ..." \
+    http://127.0.0.1:8200/v1/auth/tencentcloud/roles/dev-role
+```
+
+### Sample Response
+
+```json
+{
+  "data": {
+    "arn": "qcs::sts:1000262333:assumed-role/46116860184274112",
+    "policies": ["default", "dev", "online"],
+    "ttl": 1800000,
+    "max_ttl": 1800000,
+    "period": 0
+  }
+}
+```
+
+## List Roles
+
+Lists all the roles that are created with the method.
+
+| Method | Path                   |
+| :----- | :--------------------- |
+| `LIST` | `auth/tencentcloud/roles` |
+
+### Sample Request
+
+```sh
+$ curl \
+    --header "X-Vault-Token: ..." \
+    --request LIST \
+    http://127.0.0.1:8200/v1/auth/tencentcloud/roles
+```
+
+### Sample Response
+
+```json
+{
+  "data": {
+    "keys": ["dev-role"]
+  }
+}
+```
+
+## Delete Role
+
+Deletes the previously created role.
+
+| Method   | Path                        |
+| :------- | :-------------------------- |
+| `DELETE` | `/auth/tencentcloud/roles/:role` |
+
+### Parameters
+
+- `role` `(string: <required>)` - Name of the role.
+
+### Sample Request
+
+```sh
+$ curl \
+    --header "X-Vault-Token: ..." \
+    --request DELETE \
+    http://127.0.0.1:8200/v1/auth/tencentcloud/roles/dev-role
+```
+
+## Login
+
+Fetch a token. This endpoint verifies the signature of the signed GetCallerIdentity request.
+
+| Method | Path                   |
+| :----- | :--------------------- |
+| `POST` | `/auth/tencentcloud/login` |
+
+### Parameters
+
+- `role` `(string: <required>)` - Name of the role.
+- `request_url` `(string: <required>)` - Base64-encoded HTTP URL used in
+  the signed request.
+- `signed_header` `(string: <required>)` - Base64-encoded,
+  JSON-serialized representation of the sts:GetCallerIdentity HTTP request
+  headers. The JSON serialization assumes that each header key maps to either a
+  string value or an array of string values (though the length of that array
+  will probably only be one).
+- `request_body` `(string: <required>)` - Base64-encoded HTTP body used in
+  the signed request.
+
+### Sample Payload
+
+```json
+{
+  "role": "dev-role",
+  "request_url": "c3RzLnRlb23454jbG91ZGFwaS5jb20=",
+  "signed_header": "eyJBdXRob3JpemF0aW9uIjpbIlRDMy1ITfa432agzAZW50aWFsPXRlc3QvMjAyMC0wOS0wMi9jdm0vdGMzX3JlcXVlc3QsIFNpZ25lZEhlYWRlcnM9Y29udGVudC10eXBlO2hvc3QsIFNpZ25hdHVyZT04YWU3MzNkYTE0Yzk3NDAwMmZhYWJhMWViOTAwY2I0MTVkYWRhYTdjMWExZmViYTkwYzYwNWVjOGMyMDQ0YjNjIl0sIkNvbnRlbnQtVHlwZSI6WyJhcHBsaWNhdGlvbi9qc29uIl0sIlgtVGMtQWN0aW9uIjpbIkRlc2NyaWJlSW5zdGFuY2VzIl0sIlgtVGMtTGFuZ3VhZ2UiOlsiemgtQ04iXSwiWC1UYy1SZWdpb24iOlsiYXAtZ3Vhbmd6aG91Il0sIlgtVGMtUmVxdWVzdGNsaWVudCI6WyJBUElFeLVRjLCI6WyIxNTk5MDM1NjY0Il0sIlgtVGMtVmVyc2lvbiI6WyIyMDE3LTAzLTEyIl19",
+  "request_body": "e30="
+}
+```
+
+### Sample Request
+
+```sh
+$ curl \
+    --request POST \
+    --data @payload.json \
+    http://127.0.0.1:8200/v1/auth/tencentcloud/login
+```
+
+### Sample Response
+
+```json
+{
+    "request_id":"685aac87-91f9-8055-89dc-alkjfalk32",
+    "lease_id":"",
+    "renewable":false,
+    "lease_duration":0,
+    "data":null,
+    "wrap_info":null,
+    "warnings":null,
+    "auth":{
+        "client_token":"s.mSPSqTquQwoNqmNtJpTNFBHW",
+        "accessor":"2x8e44HOS7noRk4dOwDG89Ub",
+        "policies":[
+            "default",
+            "online"
+        ],
+        "token_policies":[
+            "default",
+            "online"
+        ],
+        "metadata":{
+            "account_id":"1000262333",
+            "arn":"qcs::sts:1000262333:assumed-role/46116860184274112",
+            "principal_id":"1000262333",
+            "request_id":"685aac87-91f9-8055-89dc-alkjfalk32",
+            "role_name":"dev-role",
+            "type":"CAMUser",
+            "user_id":"1000262333"
+        },
+        "lease_duration":2764800,
+        "renewable":true,
+        "entity_id":"ara432rafagagagat2-af-af-af",
+        "token_type":"service",
+        "orphan":true
+    }
+}
+```

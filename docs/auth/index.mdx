@@ -59,7 +59,7 @@ $ vault auth enable tencentcloud
 #### Configure the policies on the role.
 
 ```sh
-$ vault write auth/tencentcloud/role/dev-role arn='qcs::cam::uin/12345678:roleName/testRoleName'
+$ vault write auth/tencentcloud/roles/dev-role arn='qcs::cam::uin/12345678:roleName/testRoleName'
 ```
 
 #### Perform the login operation
@@ -68,7 +68,8 @@ $ vault write auth/tencentcloud/role/dev-role arn='qcs::cam::uin/12345678:roleNa
 $ vault write auth/tencentcloud/login \
         role=dev-role \
         request_url=c3RzLnRlb23454jbG91ZGFwaS5jb20= \
-        signed_header=eyJBdXRob3JpemF0aW9uIjpbIlRDMy1ITfa432agzAZW50aWFsPXRlc3QvMjAyMC0wOS0wMi9jdm0vdGMzX3JlcXVlc3QsIFNpZ25lZEhlYWRlcnM9Y29udGVudC10eXBlO2hvc3QsIFNpZ25hdHVyZT04YWU3MzNkYTE0Yzk3NDAwMmZhYWJhMWViOTAwY2I0MTVkYWRhYTdjMWExZmViYTkwYzYwNWVjOGMyMDQ0YjNjIl0sIkNvbnRlbnQtVHlwZSI6WyJhcHBsaWNhdGlvbi9qc29uIl0sIlgtVGMtQWN0aW9uIjpbIkRlc2NyaWJlSW5zdGFuY2VzIl0sIlgtVGMtTGFuZ3VhZ2UiOlsiemgtQ04iXSwiWC1UYy1SZWdpb24iOlsiYXAtZ3Vhbmd6aG91Il0sIlgtVGMtUmVxdWVzdGNsaWVudCI6WyJBUElFeLVRjLCI6WyIxNTk5MDM1NjY0Il0sIlgtVGMtVmVyc2lvbiI6WyIyMDE3LTAzLTEyIl19
+        signed_header=eyJBdXRob3JpemF0aW9uIjpbIlRDMy1ITfa432agzAZW50aWFsPXRlc3QvMjAyMC0wOS0wMi9jdm0vdGMzX3JlcXVlc3QsIFNpZ25lZEhlYWRlcnM9Y29udGVudC10eXBlO2hvc3QsIFNpZ25hdHVyZT04YWU3MzNkYTE0Yzk3NDAwMmZhYWJhMWViOTAwY2I0MTVkYWRhYTdjMWExZmViYTkwYzYwNWVjOGMyMDQ0YjNjIl0sIkNvbnRlbnQtVHlwZSI6WyJhcHBsaWNhdGlvbi9qc29uIl0sIlgtVGMtQWN0aW9uIjpbIkRlc2NyaWJlSW5zdGFuY2VzIl0sIlgtVGMtTGFuZ3VhZ2UiOlsiemgtQ04iXSwiWC1UYy1SZWdpb24iOlsiYXAtZ3Vhbmd6aG91Il0sIlgtVGMtUmVxdWVzdGNsaWVudCI6WyJBUElFeLVRjLCI6WyIxNTk5MDM1NjY0Il0sIlgtVGMtVmVyc2lvbiI6WyIyMDE3LTAzLTEyIl19 \
+        request_body=e30=
 ```
 
 - The `request_url` is base64 encoded, and the raw url is like `sts.ap-guangzhou.tencentcloudapi.com`.
