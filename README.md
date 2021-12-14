@@ -98,10 +98,11 @@ To run the acceptance tests, you will need a TencentCloud account.
 To run the acceptance tests, invoke `make test-acc`:
 
 ```sh
-$ export VAULT_ACC_TEST_ACCESS_KEY=YOU ACCESS KEY
+$ export VAULT_ACC_TEST_SECRET_ID=YOU 
 $ export VAULT_ACC_TEST_SECRET_KEY=YOU SECRET KEY
-$ export VAULT_ACC_TEST_SECRET_TOKEN=YOU SECRET TOKEN (if you run as a CAM role, VAULT_ACC_TEST_SECRET_TOKEN is required)
-$ export VAULT_ACC_TEST_REGION=YOU REGION
+$ export VAULT_ACC_TEST_TOKEN=YOU SECRET TOKEN (if you run as a CAM role, VAULT_ACC_TEST_TOKEN is required)
+$ export CLIENT_CONFIG_TEST_SECRET_ID=CLIENT CONFIG SECRET ID
+$ export CLIENT_CONFIG_TEST_SECRET_KEY=CLIENT CONFIG SECRET KEY
 $ make test-acc
 ```
 

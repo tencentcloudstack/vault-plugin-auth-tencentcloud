@@ -7,7 +7,7 @@ EXTERNAL_TOOLS=\
 BUILD_TAGS?=${TOOL}
 GOFMT_FILES?=$$(find . -name '*.go' | grep -v vendor)
 
-# bin generates the releasable binaries for this plugin
+# bin generates the releaseable binaries for this plugin
 bin: fmtcheck generate
 	@CGO_ENABLED=0 BUILD_TAGS='$(BUILD_TAGS)' sh -c "'$(CURDIR)/scripts/build.sh'"
 
