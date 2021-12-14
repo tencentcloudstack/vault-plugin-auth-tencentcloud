@@ -91,5 +91,5 @@ Vault CLI source code
 ## API
 
 The Tencent Cloud auth method has a full HTTP API. Please see the
-[Tencent Cloud  Auth API](/api/auth/tencentcloud) for more
+[Tencent Cloud  Auth API](https://github.com/tencentcloudstack/vault-plugin-auth-tencentcloud/blob/master/docs/Tencent%20Cloud%20-%20Auth%20Methods%20-%20HTTP%20API.md) for more
 details.
