@@ -28,7 +28,7 @@ an access token based on pre-configured roles.
 
 ## Usage
 
-Please see [documentation for the plugin](https://www.vaultproject.io/docs/auth/tencentcloud.html)
+Please see [documentation for the plugin](https://github.com/tencentcloudstack/vault-plugin-auth-tencentcloud/blob/master/docs/Tencent%20Cloud%20Auth%20Method.md)
 on the Vault website.
 
 This plugin is currently built into Vault and by default is accessed at `auth/tencentcloud`.
@@ -39,7 +39,7 @@ $ vault auth enable tencentcloud
 Success! Enabled tencentcloud auth method at: tencentcloud/
 ```
 
-To see all the supported paths, see the [TencentCloud auth backend docs](https://www.vaultproject.io/docs/auth/tencentcloud.html).
+To see all the supported paths, see the [TencentCloud auth backend docs](https://github.com/tencentcloudstack/vault-plugin-auth-tencentcloud/blob/master/docs/Tencent%20Cloud%20Auth%20Method.md).
 
 ## Developing
 
