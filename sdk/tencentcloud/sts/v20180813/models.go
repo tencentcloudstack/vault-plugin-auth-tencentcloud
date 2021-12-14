@@ -1,8 +1,22 @@
-package custom
+// Copyright (c) 2017-2018 THL A29 Limited, a Tencent company. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package v20180813
 
 import (
 	"encoding/json"
-
+	tcerr "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	tchttp "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/http"
 )
 
@@ -15,14 +29,23 @@ func (r *GetCallerIdentityRequest) ToJsonString() string {
 	return string(b)
 }
 
+// FromJsonString It is highly **NOT** recommended to use this function
+// because it has no param check, nor strict type check
 func (r *GetCallerIdentityRequest) FromJsonString(s string) error {
+	f := make(map[string]interface{})
+	if err := json.Unmarshal([]byte(s), &f); err != nil {
+		return err
+	}
+	if len(f) > 0 {
+		return tcerr.NewTencentCloudSDKError("ClientError.BuildRequestError", "GetCallerIdentityRequest has unknown keys!", "")
+	}
 	return json.Unmarshal([]byte(s), &r)
 }
 
 type GetCallerIdentityResponse struct {
 	*tchttp.BaseResponse
-
 	Response *struct {
+
 		// 当前调用者ARN。
 		Arn *string `json:"Arn,omitempty" name:"Arn"`
 
@@ -53,58 +76,8 @@ func (r *GetCallerIdentityResponse) ToJsonString() string {
 	return string(b)
 }
 
+// FromJsonString It is highly **NOT** recommended to use this function
+// because it has no param check, nor strict type check
 func (r *GetCallerIdentityResponse) FromJsonString(s string) error {
-	return json.Unmarshal([]byte(s), &r)
-}
-
-type GetUserBasicInfoRequest struct {
-	*tchttp.BaseRequest
-
-	// 子用户UIN，查询主账号时填主账号Uin
-	SubUin *int64 `json:"SubUin,omitempty" name:"SubUin"`
-}
-
-func (r *GetUserBasicInfoRequest) ToJsonString() string {
-	b, _ := json.Marshal(r)
-	return string(b)
-}
-
-func (r *GetUserBasicInfoRequest) FromJsonString(s string) error {
-	return json.Unmarshal([]byte(s), &r)
-}
-
-type GetUserBasicInfoResponse struct {
-	*tchttp.BaseResponse
-
-	Response *struct {
-		// 昵称
-		Nickname *string `json:"Nickname,omitempty" name:"Nickname"`
-
-		// 手机号码
-		PhoneNumber *string `json:"PhoneNumber,omitempty" name:"PhoneNumber"`
-
-		// 邮箱号码
-		Email *string `json:"Email,omitempty" name:"Email"`
-
-		// 用户类型
-		Type *string `json:"Type,omitempty" name:"Type"`
-
-		// 手机是否验证标记
-		PhoneFlag *int64 `json:"PhoneFlag,omitempty" name:"PhoneFlag"`
-
-		// 邮件是否验证标记
-		EmailFlag *int64 `json:"EmailFlag,omitempty" name:"EmailFlag"`
-
-		// 唯一请求 ID，每次请求都会返回。定位问题时需要提供该次请求的 RequestId。
-		RequestId *string `json:"RequestId,omitempty" name:"RequestId"`
-	} `json:"Response"`
-}
-
-func (r *GetUserBasicInfoResponse) ToJsonString() string {
-	b, _ := json.Marshal(r)
-	return string(b)
-}
-
-func (r *GetUserBasicInfoResponse) FromJsonString(s string) error {
 	return json.Unmarshal([]byte(s), &r)
 }
