@@ -6,9 +6,9 @@ This plugin allows authentication to Vault using Cloud Access Management (CAM).
 **Please note**: We take Vault's security and our users' trust very seriously. If you believe you have found a security issue in Vault, _please responsibly disclose_ by contacting us at [security@hashicorp.com](mailto:security@hashicorp.com).
 
 ## Quick Links
-    - Vault Website: https://www.vaultproject.io
-    - TencentCloud Auth Docs: https://www.vaultproject.io/docs/auth/tencentcloud.html
-    - Main Project Github: https://www.github.com/hashicorp/vault
+- [Vault Website](https://www.vaultproject.io)
+- [TencentCloud Auth Docs](https://github.com/tencentcloudstack/vault-plugin-auth-tencentcloud/blob/master/docs/Tencent%20Cloud%20Auth%20Method.md)
+- [Main Project Github](https://www.github.com/hashicorp/vault)
 
 ## Getting Started
 
@@ -29,7 +29,6 @@ an access token based on pre-configured roles.
 ## Usage
 
 Please see [documentation for the plugin](https://github.com/tencentcloudstack/vault-plugin-auth-tencentcloud/blob/master/docs/Tencent%20Cloud%20Auth%20Method.md)
-on the Vault website.
 
 This plugin is currently built into Vault and by default is accessed at `auth/tencentcloud`.
 To enable this in a running Vault server:
