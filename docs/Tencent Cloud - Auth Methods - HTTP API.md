@@ -2,7 +2,7 @@
 
 This is the API documentation for the Vault Tencent Cloud auth method. For general information about the usage and
 operation of the Tencent Cloud method, please see
-the [Vault Tencent Cloud auth method documentation](/docs/auth/tencentcloud).
+the [Vault Tencent Cloud auth method documentation](https://github.com/tencentcloudstack/vault-plugin-auth-tencentcloud/blob/master/docs/Tencent%20Cloud%20Auth%20Method.md).
 
 This documentation assumes the Tencent Cloud auth method is mounted at the `/auth/tencentcloud`
 path in Vault. Since it is possible to enable auth methods at any location, please update your API calls accordingly.
