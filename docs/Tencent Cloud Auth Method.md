@@ -9,7 +9,7 @@ etc), by operators.
 
 ## Authentication Workflow
 
-The AliCloud STS API includes a method,
+The TencentCloud STS API includes a method,
 [`sts:GetCallerIdentity`],
 which allows you to validate the identity of a client. The client signs
 a `GetCallerIdentity` query using the [Tencent Cloud Signature Algorithm v3](https://intl.cloud.tencent.com/document/api/598/32225). It then
