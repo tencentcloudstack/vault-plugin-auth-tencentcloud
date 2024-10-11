@@ -93,8 +93,10 @@ $ vault write auth/tencentcloud/role/dev-role arn='qcs::cam::uin/100021543443:ro
 ```shell
 $ vault write auth/tencentcloud/login \
         role=dev-role \
-        identity_request_url=$IDENTITY_REQUEST_URL_BASE_64 \
-        identity_request_headers=$IDENTITY_REQUEST_HEADERS_BASE_64
+        region=$IDENTITY_REQUEST_REGION \
+        secret_id=$IDENTITY_REQUEST_SECRET_ID \
+        secret_key=$IDENTITY_REQUEST_SECRET_KEY \
+        token=$IDENTITY_REQUEST_TOKEN
 ```
 
 For the CAM auth method, generating the signed request is a non-standard operation. The Vault CLI supports generating

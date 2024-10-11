@@ -4,36 +4,31 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/vault-plugin-auth-tencentcloud/tools"
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"github.com/hashicorp/vault-plugin-auth-tencentcloud/clients"
-	"github.com/hashicorp/vault-plugin-auth-tencentcloud/tools"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 )
 
 /*
-   Test auth through http api
-   curl \
-    --request POST \
-    --data {"region":"","roleName":"","vaultAddr":"","secret_id":"","secret_key":"","token":""} \
-    http://127.0.0.1:8088/login
+Test auth through http api
+
+	curl \
+	 --request POST \
+	 --data {"region":"","role_name":"","vault_addr":"","secret_id":"","secret_key":"","token":""} \
+	 http://127.0.0.1:8088/login
 */
 func LoginServer(w http.ResponseWriter, req *http.Request) {
 	s, _ := ioutil.ReadAll(req.Body)
 	m := make(map[string]string)
 	json.Unmarshal(s, &m)
 	region := m["region"]
-	roleName := m["roleName"]
-	vaultAddr := m["vaultAddr"]
+	roleName := m["role_name"]
+	vaultAddr := m["vault_addr"]
 	secretId := m["secret_id"]
 	secretKey := m["secret_key"]
 	token := m["token"]
-	loginData, err := getLoginData(secretId, secretKey, token, region, roleName)
-	if err != nil {
-		panic(err)
-	}
+	loginData := tools.GenerateLoginDataV2(roleName, region, secretId, secretKey, token)
 	b, err := json.Marshal(loginData)
 	if err != nil {
 		panic(err)
@@ -65,31 +60,15 @@ func GetLoginData(w http.ResponseWriter, req *http.Request) {
 	m := make(map[string]string)
 	json.Unmarshal(s, &m)
 	region := m["region"]
-	roleName := m["roleName"]
+	roleName := m["role_name"]
 	secretId := m["secret_id"]
 	secretKey := m["secret_key"]
 	token := m["token"]
-	loginData, err := getLoginData(secretId, secretKey, token, region, roleName)
-	if err != nil {
-		panic(err)
-	}
+	loginData := tools.GenerateLoginDataV2(roleName, region, secretId, secretKey, token)
 	data, _ := json.Marshal(loginData)
 	w.Write(data)
 }
 
-func getLoginData(secretId string, secretKey string, token string,
-	region string, roleName string) (map[string]interface{}, error) {
-	credentialChain := []common.Provider{
-		clients.NewConfigurationCredentialProvider(
-			&clients.Configuration{secretId, secretKey, token}),
-	}
-	creds, err := common.NewProviderChain(credentialChain).GetCredential()
-	if err != nil {
-		return nil, err
-	}
-	return tools.GenerateLoginData(roleName, creds, region)
-
-}
 func main() {
 	http.HandleFunc("/login", LoginServer)
 	http.HandleFunc("/getLoginData", GetLoginData)

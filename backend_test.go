@@ -366,29 +366,13 @@ func (e *testEnv) getIsAccTestCreds(t *testing.T) (creds common.CredentialIface)
 }
 
 func (e *testEnv) LoginSuccess(t *testing.T) {
-
-	var creds common.CredentialIface
-	var err error
-
-	if e.isAccTest {
-		creds = e.getIsAccTestCreds(t)
-	} else {
-		creds, err = clients.NewConfigurationCredentialProvider(&clients.Configuration{
-			// dummy creds are fine
-			SecretId:  e.clientConfigSecretId,
-			SecretKey: e.clientConfigSecretKey,
-			Token:     e.token,
-		}).GetCredential()
-	}
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	data, err := tools.GenerateLoginData(e.arn.RoleName, creds, "us-west-2")
-	if err != nil {
-		t.Fatal(err)
-	}
+	data := tools.GenerateLoginDataV2(
+		e.arn.RoleName,
+		"na-ashburn",
+		e.clientConfigSecretId,
+		e.clientConfigSecretKey,
+		e.token,
+	)
 	req := &logical.Request{
 		Operation: logical.UpdateOperation,
 		Path:      "login",
