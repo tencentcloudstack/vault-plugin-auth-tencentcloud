@@ -1,55 +1,20 @@
 package tools
 
 import (
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
-
-	stsLocal "github.com/hashicorp/vault-plugin-auth-tencentcloud/sdk/tencentcloud/sts/v20180813"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/regions"
 )
 
-// Generates the necessary data to send to the Vault server for generating a token.
-// This is useful for other API clients to use.
-// If "" is passed in for SecretId,SecretKey,Token
-// attempts to use credentials set as env vars or available through instance metadata.
-func GenerateLoginData(role string, creds common.CredentialIface, region string) (map[string]interface{}, error) {
-	profile := profile.NewClientProfile()
-	profile.Language = "en-US"
-	capturer := &RequestCapturer{}
-	transport := &http.Transport{}
-	transport.Proxy = capturer.Proxy
-	if region == "" {
-		region = regions.Ashburn
-	}
-	client, err := stsLocal.NewClient(creds, region, profile)
-	if err != nil {
-		return nil, err
-	}
-	client.WithHttpTransport(transport)
-	client.GetCallerIdentity(stsLocal.NewGetCallerIdentityRequest())
-	getCallerIdentityRequest, err := capturer.GetCapturedRequest()
-	if err != nil {
-		return nil, err
-	}
-	u := base64.StdEncoding.EncodeToString([]byte(getCallerIdentityRequest.URL.String()))
-	b, err := json.Marshal(getCallerIdentityRequest.Header)
-	if err != nil {
-		return nil, err
-	}
-	headers := base64.StdEncoding.EncodeToString(b)
-	if err != nil {
-		return nil, err
-	}
+// GenerateLoginDataV2 Generates the necessary data to send to the Vault server for generating a token.
+func GenerateLoginDataV2(role, region, secretId, secretKey, token string) map[string]interface{} {
 	return map[string]interface{}{
-		"role":                     role,
-		"identity_request_url":     u,
-		"identity_request_headers": headers,
-	}, nil
+		"role":       role,
+		"region":     region,
+		"secret_id":  secretId,
+		"secret_key": secretKey,
+		"token":      token,
+	}
 }
 
 /*
