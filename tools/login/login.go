@@ -8,15 +8,16 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/hashicorp/vault-plugin-auth-tencentcloud/clients"
 	"github.com/hashicorp/vault-plugin-auth-tencentcloud/tools"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 )
 
 func main() {
-	region := os.Getenv("REGION")        // ex. 'na-ashburn'
-	roleName := os.Getenv("ROLE_NAME")   // ex. 'firingrole001'
-	vaultAddr := os.Getenv("VAULT_ADDR") // ex. 'http://127.0.0.1:8200'
+	region := os.Getenv("REGION")                // ex. 'na-ashburn'
+	roleName := os.Getenv("ROLE_NAME")           // ex. 'firingrole001'
+	vaultAddr := os.Getenv("VAULT_ADDR")         // ex. 'http://127.0.0.1:8200'
+	sid := os.Getenv("TENCENTCLOUD_SECRET_ID")   // ex. 'xxx'
+	skey := os.Getenv("TENCENTCLOUD_SECRET_KEY") // ex. 'xxx'
+	token := os.Getenv("TENCENTCLOUD_TOKEN")     // ex. 'xxx'
 	if region == "" {
 		panic("REGION must be set")
 	}
@@ -26,19 +27,17 @@ func main() {
 	if vaultAddr == "" {
 		panic("VAULT_ADDR must be set")
 	}
-	// can get token Provider
-	credentialChain := []common.Provider{
-		clients.DefaultEnvProvider(),
+	if sid == "" {
+		panic("sid must be set")
 	}
-	creds, err := common.NewProviderChain(credentialChain).GetCredential()
-	if err != nil {
-		panic(err)
+	if skey == "" {
+		panic("skey must be set")
 	}
-	loginData, err := tools.GenerateLoginData(roleName, creds, region)
-	if err != nil {
-		panic(err)
+	if token == "" {
+		panic("token must be set")
 	}
 
+	loginData := tools.GenerateLoginDataV2(roleName, region, sid, skey, token)
 	b, err := json.Marshal(loginData)
 	if err != nil {
 		panic(err)

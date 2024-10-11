@@ -164,18 +164,20 @@ Fetch a token. This endpoint verifies the signature of the signed GetCallerIdent
 ### Parameters
 
 - `role` `(string: <required>)` - Name of the role.
-- `identity_request_url` `(string: <required>)` - Base64-encoded HTTP URL used in the signed request.
-- `identity_request_headers` `(string: <required>)` - Base64-encoded, JSON-serialized representation of the sts:
-  GetCallerIdentity HTTP request headers. The JSON serialization assumes that each header key maps to either a string
-  value or an array of string values (though the length of that array will probably only be one).
+- `region` `(string: <optional>)` - Name of the region.
+- `secret_id` `(string: <required>)` - Tencentcloud secret id
+- `secret_key` `(string: <required>)` - Tencentcloud secret key
+- `token` `(string: <required>)` - Tencentcloud token
 
 ### Sample Payload
 
 ```json
 {
   "role": "dev-role",
-  "identity_request_url": "...",
-  "identity_request_headers": "..."
+  "region": "...",
+  "secret_id": "...",
+  "secret_key": "...",
+  "token": "..."
 }
 ```
 

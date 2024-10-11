@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault-plugin-auth-tencentcloud/clients"
 	"github.com/hashicorp/vault-plugin-auth-tencentcloud/tools"
 	"github.com/hashicorp/vault/api"
 )
@@ -20,15 +19,11 @@ func (h *CLIHandler) Auth(c *api.Client, m map[string]string) (*api.Secret, erro
 		mount = "tencentcloud"
 	}
 	role := m["role"]
-
-	creds, err := clients.ChainedCredsToCli(m["secret_id"], m["secret_key"], m["token"])
-	if err != nil {
-		return nil, err
-	}
-	loginData, err := tools.GenerateLoginData(role, creds, m["region"])
-	if err != nil {
-		return nil, err
-	}
+	sid := m["secret_id"]
+	skey := m["secret_key"]
+	token := m["token"]
+	region := m["region"]
+	loginData := tools.GenerateLoginDataV2(role, sid, skey, token, region)
 	path := fmt.Sprintf("auth/%s/login", mount)
 	secret, err := c.Logical().Write(path, loginData)
 	if err != nil {

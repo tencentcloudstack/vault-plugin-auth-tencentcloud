@@ -1,16 +1,14 @@
 package clients
 
 import (
-	"fmt"
-
 	cam "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cam/v20190116"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/regions"
 )
 
 // init New CAM Client
-func NewCAMClient(secretId, secretKey string) (*CAMClient, error) {
-	creds, err := ChainedCredsToCli(secretId, secretKey, "")
+func NewCAMClient(secretId, secretKey, token string) (*CAMClient, error) {
+	creds, err := ChainedCredsToCli(secretId, secretKey, token)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +32,6 @@ func (c *CAMClient) GetRoleName(roleId string) (roleName string, err error) {
 	req := cam.NewGetRoleRequest()
 	req.RoleId = &roleId
 	roleRsp, err := c.client.GetRole(req)
-	fmt.Println(roleRsp.ToJsonString())
 	if err != nil {
 		return "", err
 	}
